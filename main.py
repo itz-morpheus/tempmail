@@ -605,7 +605,7 @@ def index():
 if __name__ == "__main__":
     # Start TeleBot in a separate thread to prevent blocking
     threading.Thread(
-        target=lambda: TempMailBot.infinity_polling(skip_pending=True, none_stop=True)
+        target=lambda: TempMailBot.infinity_polling(drop_pending_updates=True, none_stop=True)
     ).start()
     
     # Run Flask server to listen on the required port
