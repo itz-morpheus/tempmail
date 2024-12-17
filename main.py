@@ -603,11 +603,16 @@ def index():
     return "Bot is running and alive!"
 
 if __name__ == "__main__":
-    # Start TeleBot in a separate thread to prevent blocking
+    # Start Flask server in a separate thread
     threading.Thread(
-        target=lambda: TempMailBot.infinity_polling(drop_pending_updates=True, none_stop=True)
+        target=lambda: app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8000)))
     ).start()
     
-    # Run Flask server to listen on the required port
-    port = int(os.environ.get("PORT", 8000))  # Default to 8000 if PORT not set
-    app.run(host="0.0.0.0", port=port)
+    # Original bot code remains unchanged
+    try:
+        TempMailBot.infinity_polling(
+            skip_pending=True, 
+            none_stop=True,
+        )
+    except:
+        print("Lost connection!")
