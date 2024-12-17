@@ -17,6 +17,8 @@ from telebot import types, util       # TeleBot utilities
 from telebot.util import quick_markup # Markup generator
 from utils import Generate_Email      # Email generator
 from utils import Load_Mail_Box       # Mail box loader
+from flask import Flask 
+import threading
 
 
 # Connect to bot
@@ -594,15 +596,18 @@ def callback_query(call: object) -> None:
 # Connect to  bot in  infinite polling mode
 # Make   bot  connection       non     stop
 # Skip      old    messages,  don't  update
+app = Flask(__name__)
+
+@app.route("/")
+def index():
+    return "Bot is running and alive!"
+
 if __name__ == "__main__":
-
-    # Error handling 
-    try:
-        TempMailBot.infinity_polling(
-            skip_pending=True, 
-            none_stop=True,
-        )
-
-    # Except any error
-    except: 
-        print("Lost connection!")
+    # Start TeleBot in a separate thread to prevent blocking
+    threading.Thread(
+        target=lambda: TempMailBot.infinity_polling(skip_pending=True, none_stop=True)
+    ).start()
+    
+    # Run Flask server to listen on the required port
+    port = int(os.environ.get("PORT", 8000))  # Default to 8000 if PORT not set
+    app.run(host="0.0.0.0", port=port)
