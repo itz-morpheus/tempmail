@@ -1,5 +1,7 @@
-pyTelegramBotAPI
+
 requests
 Flask
 flake8
 gunicorn
+shazamio
+
